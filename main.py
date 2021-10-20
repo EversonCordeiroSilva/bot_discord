@@ -28,26 +28,25 @@ def excel(diaDaSemana='domingo'):
     del excel[-1]
     return excel
 
+async def servidor():
+
+    return
+
 async def my_background_task():
     await client.wait_until_ready()
     # channel = client.get_channel(id=894572084670373908) # replace with channel_id
-    servers = client.get_all_servers()
     while not client.is_closed():
-        # Para cada servidor
-        for server in servers:
-            for channel in server.channels:
-                # importar
-                for e in excel(semana[datetime.datetime.today().weekday()]):
-                    horaDoBoss = str(format(e[2], '%H:%M'))
-                    # now = datetime.datetime.now() + datetime.timedelta(minutes=19) #para testes
-                    now = datetime.datetime.now().time()
-                    now = str(format(now, '%H:%M'))
-                    # print(now)
-                    # print(horaDoBoss)
-                    # print(now==horaDoBoss)
-                    if (horaDoBoss == now):
-                        mensagem = "Atenção!\n@everyone\n" + e[0] + "de Lv. " + str(e[1]) + " Apareceu! \nLocalização: " + e[3] + "\nRecompensa: " + e[4] + "\nFama points: " + str(e[5]) + "\nObservações adicionais: " + e[6]
-                        await channel.send(content=mensagem, allowed_mentions=allowed_mentions)
+        # importar
+        for e in excel(semana[datetime.datetime.today().weekday()]):
+            horaDoBoss = str(format(e[2], '%H:%M'))
+            # now = datetime.datetime.now() + datetime.timedelta(minutes=19) #para testes
+            now = datetime.datetime.now().time()
+            now = str(format(now, '%H:%M'))
+            print('Horario atual: '+now)
+            print('Horario do proximo boss: '+horaDoBoss)
+            if (horaDoBoss == now):
+                mensagem = "Atenção!\n@everyone\n" + e[0] + "de Lv. " + str(e[1]) + " Apareceu! \nLocalização: " + e[3] + "\nRecompensa: " + e[4] + "\nFama points: " + str(e[5]) + "\nObservações adicionais: " + e[6]
+                await client.get_all_channels().send(content=mensagem, allowed_mentions=allowed_mentions)
         await asyncio.sleep(60)  # task runs every 60 seconds
 
 

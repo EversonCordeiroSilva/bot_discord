@@ -47,12 +47,14 @@ async def my_background_task():
             print('Horario do boss: '+horaDoBoss)
             if (horaDoBoss == now):
                 mensagem = "Atenção!\n@everyone\n" + e[0] + "de Lv. " + str(e[1]) + " Apareceu! \nLocalização: " + e[3] + "\nRecompensa: " + e[4] + "\nFama points: " + str(e[5]) + "\nObservações adicionais: " + e[6]
-                for channel in client.get_all_channels():
-                    try:
-                        if channel.type == discord.ChannelType.text:
-                            await client.get_channel(channel.id).send(content=mensagem, allowed_mentions=allowed_mentions)
-                    except:
-                        print('Nao foi possivel enviar uma mensagem...')
+                for guild in client.guilds:
+                    for channel in guild.channels:
+                        try:
+                            if channel.type == discord.ChannelType.text:
+                                if channel.permissions_for(guild.me).send_messages:
+                                    await client.get_channel(channel.id).send(content=mensagem, allowed_mentions=allowed_mentions)
+                        except:
+                            print('Nao foi possivel enviar uma mensagem...')
         await asyncio.sleep(60)  # task runs every 60 seconds
 
 

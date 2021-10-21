@@ -1,4 +1,7 @@
 import datetime
+
+from discord.ext import commands
+from discord.ext.commands import has_permissions
 from pytz import timezone
 import discord
 import asyncio
@@ -9,7 +12,7 @@ import pyexcel_ods
 load_dotenv()
 TOKEN = os.getenv('TOKEN')
 CHANNEL_ID = os.getenv('CHANNEL_ID')
-client = discord.Client()
+client  = discord.Client()
 semana = {0: 'segunda', 1: 'terca', 2: 'quarta', 3: 'quinta', 4: 'sexta', 5: 'sabado', 6: 'domingo'}
 allowed_mentions = discord.AllowedMentions(everyone=True)
 
@@ -26,6 +29,7 @@ def excel(diaDaSemana='domingo'):
     del excel[-1]
     del excel[-1]
     return excel
+
 
 async def my_background_task():
     await client.wait_until_ready()
@@ -44,7 +48,11 @@ async def my_background_task():
             if (horaDoBoss == now):
                 mensagem = "Atenção!\n@everyone\n" + e[0] + "de Lv. " + str(e[1]) + " Apareceu! \nLocalização: " + e[3] + "\nRecompensa: " + e[4] + "\nFama points: " + str(e[5]) + "\nObservações adicionais: " + e[6]
                 for channel in client.get_all_channels():
-                    await client.get_channel(channel.id).send(content=mensagem, allowed_mentions=allowed_mentions)
+                    try:
+                        if channel.type == discord.ChannelType.text:
+                            await client.get_channel(channel.id).send(content=mensagem, allowed_mentions=allowed_mentions)
+                    except:
+                        print('Nao foi possivel enviar uma mensagem...')
         await asyncio.sleep(60)  # task runs every 60 seconds
 
 

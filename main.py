@@ -10,7 +10,6 @@ load_dotenv()
 TOKEN = os.getenv('TOKEN')
 CHANNEL_ID = os.getenv('CHANNEL_ID')
 client = discord.Client()
-channel = None
 semana = {0: 'segunda', 1: 'terca', 2: 'quarta', 3: 'quinta', 4: 'sexta', 5: 'sabado', 6: 'domingo'}
 allowed_mentions = discord.AllowedMentions(everyone=True)
 
@@ -32,6 +31,7 @@ async def my_background_task():
     await client.wait_until_ready()
     # channel = client.get_channel(id=894572084670373908) # replace with channel_id
     fuso_horario = timezone('America/Sao_Paulo')
+
     while not client.is_closed():
         # importar
         for e in excel(semana[datetime.datetime.today().weekday()]):
@@ -43,7 +43,8 @@ async def my_background_task():
             print('Horario do boss: '+horaDoBoss)
             if (horaDoBoss == now):
                 mensagem = "Atenção!\n@everyone\n" + e[0] + "de Lv. " + str(e[1]) + " Apareceu! \nLocalização: " + e[3] + "\nRecompensa: " + e[4] + "\nFama points: " + str(e[5]) + "\nObservações adicionais: " + e[6]
-                await client.get_all_channels().send(content=mensagem, allowed_mentions=allowed_mentions)
+                for channel in client.get_all_channels():
+                    await client.get_channel(channel.id).send(content=mensagem, allowed_mentions=allowed_mentions)
         await asyncio.sleep(60)  # task runs every 60 seconds
 
 
